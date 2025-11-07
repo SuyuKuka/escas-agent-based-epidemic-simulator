@@ -8,6 +8,6 @@
 
 
 TODO
-[ ] Edtudier la page wiki sur l'epidemiologie
-[ ] Define an ocaml type for virus and a type for bacteria
-[ ] Ecrire le squelette de la fonction `main`
+- [ ] Etudier la page wiki sur l'epidemiologie
+- [ ] Define an ocaml type for virus and a type for bacteria
+- [ ] Ecrire le squelette de la fonction `main`
