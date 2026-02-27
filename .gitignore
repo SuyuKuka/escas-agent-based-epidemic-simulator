@@ -1,0 +1,10 @@
+# Report
+report/template/*
+!report/template/fibo.py
+!report/template/geant.
+!report/template/Makefile
+!report/template/README.md
+!report/template/report.tex
+
+.vscode
+.venv
