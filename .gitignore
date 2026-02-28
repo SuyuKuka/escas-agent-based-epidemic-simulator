@@ -8,3 +8,5 @@ report/template/*
 
 .vscode
 .venv
+
+src/main/__pycache__
