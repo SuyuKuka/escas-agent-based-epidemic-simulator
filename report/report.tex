@@ -1,0 +1,100 @@
+\documentclass{article}
+
+% This is a comment line in latex
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,french]{babel}
+
+%% This package is necessary to use \includegraphics.
+\usepackage{graphicx}
+
+%% This package is necessary to define hyperlinks.
+\usepackage{hyperref}
+
+%% These packages are necessary to include code.
+\usepackage{listings}
+\usepackage{minted} % colored
+
+%% This package is needed to enchance mathematical formulas.
+\usepackage{amsmath}
+
+
+% Latex allows you to define your own "commands",
+% better known as "macros" in the Latex world.
+% The following line is an example of such definition.
+\newcommand{\latex}{\LaTeX}
+
+
+% The next lines contain some meta informations about this document.
+
+\title{%
+  Rapport intermédiaire pour ``Projet de programmation''\\
+  A rendre le 28 Février 2026%
+}
+
+\author{CHIV Henri \& CHEN Michel}
+
+%% Here we begin giving the actual content o the document.
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+\subsection{But du projet}
+Ce projet a pour but de \textbf{simuler la propagation d'un virus en fonction des comportement individuels au sein d'une population et d'un environnement} en utilisant un modèle à base d'agents.
+L'objectif est de comprendre comment en ajoutant des caractéristiques sociaux et psychologique au sein d'une population, le virus se propage au sein de la population.
+
+\subsection{Mesure de succès}
+La mesure de succès se fera à travers plusieurs métriques :
+\begin{itemize}
+    \item Le système utilisé par la simulation est fonctionnel et est conforme aux attente.
+    \item Les résultats sont comparables et cohérents avec des données ou modèles existants.
+    \item La simulation représente correctement l'évolution de la population (sains, infectés, guéris) au fil du temps.
+    \item Les comportements individuels influencent explicitement le déroulement de la simulation.
+\end{itemize}
+
+\section{Implémentation}
+Le projet sera réalisé sur Python où la logique de simulation sera codée sans API et sera basée sur un modèle à base d'agents. Une librairie graphique sera utilisée pour visualiser la simulation en temps réel.
+
+\subsection{Comment le projet est réalisé}
+Le projet sera réalisé en Python sans API externe pour coder la logique de la simulation.
+
+\subsection{Logiciel déjà codé}
+Aucun logiciel n'a été déjà codé pour ce projet.
+
+\subsection{Structure en modules / packages}
+Le programme aura pour structure principale :
+\begin{itemize}
+    \item \textbf{main.py} : point d'entrée du programme.
+    \item \textbf{agent.py} : définition des agents et de leurs comportements.
+    \item \textbf{environment.py} : définition de l'espace et de ses caractéristiques.
+    \item \textbf{simulation.py} : gère les agents, l'environnement et les interactions à travers la boucle principale de la simulation.
+    \item \textbf{view.py} : gère la représentation graphique de la simulation.
+\end{itemize}
+
+\subsection{Représentation des données}
+Les agents et l'environnement possèdent des attributs (position, état de santé, comportement, ...) qui évolueront au fil de la simulation. 
+La classe \textbf{Simulation} contiendra la liste des agents et s'occupera des interactions entre eux ainsi qu'avec l'environnement.
+Les données de la simulation seront exportés dans un fichier au format JSON.
+
+\subsection{Technologies utilisées}
+Le projet utilisera Python 3.x, une librairie graphique ainsi que des librairies utilitaires pour le traitement et calcul de données.
+
+\section{Jalon}
+\begin{itemize}
+    \item \textbf{V1 : Implémentation de base} : définition simple des classes de la simulation avec vue minimale.
+    \item \textbf{V2 : Modularité, format de données et vue} : Structuration de code, entrée/sortie des données et implémentation de la vue.
+    \item \textbf{V3 : Fonctionnalités avancées} : Interaction directe avec la simulation à travers la vue, ajouts de nouveaux comportements.
+\end{itemize}
+
+\subsection{Organisation temporelle}
+\begin{itemize}
+    \item Semaine 1-2 : Implémentation de base (V1)
+    \item Semaine 3-7 : Modularité, format de données et vue (V2)
+    \item Semaine 8-x : Fonctionnalités avancées (V3)
+\end{itemize}
+
+\subsection{Tâches déjà terminées}
+Aucune tâche n'a encore été réalisée.
+\end{document}
