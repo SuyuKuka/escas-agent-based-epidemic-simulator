@@ -32,7 +32,7 @@ class Simulation:
     def infect_random(self):
         for _ in range(self.nb_infect):
             agent = self.agents[random.randint(0, len(self.agents) - 1)]
-            agent.state = State.INFECTE
+            agent.etat = Etat.INFECTE
 
     def update(self):
         self.move_agents()
@@ -48,36 +48,42 @@ class Simulation:
         nouveaux_infectes = []
 
         for agent in self.agents:
-            agent.tick_in_state += 1
-            if (agent.state == State.INFECTE):
+            agent.tick_etat += 1
+            if (agent.etat == Etat.INFECTE):
                 # Guérison
-                if (agent.tick_in_state == self.tick_guerison):
-                    agent.state = State.GUERI
-                    agent.tick_in_state = 0
+                if (agent.tick_etat == self.tick_guerison):
+                    agent.etat = Etat.GUERI
+                    agent.tick_etat = 0
                 else:
                     # Infection des voisins
                     for voisin in self.agents:
-                        if voisin.state == State.SAIN:
-                            dist = (voisin.x - agent.x)**2 - (voisin.y - agent.y)**2
+                        if voisin.etat == Etat.SAIN:
+                            dist = (voisin.x - agent.x)**2 + (voisin.y - agent.y)**2
                             if dist <= self.rayon_contagion**2:
-                                if (random.random() < self.proba_contagion):
+                                proba = self.proba_contagion
+                                if voisin.attitude == Attitude.PANIQUE:
+                                    proba *= 1.3
+                                elif voisin.attitude == Attitude.CONFINE:
+                                    proba *= 0.4
+
+                                if (random.random() < proba):
                                     nouveaux_infectes.append(voisin)
 
         
         for agent in nouveaux_infectes:
-            agent.state = State.INFECTE
-            agent.tick_in_state = 0
+            agent.etat = Etat.INFECTE
+            agent.tick_etat = 0
 
     def print_snapshot(self):
         sains = 0
         infectes = 0
         gueris = 0
         for agent in self.agents:
-            if (agent.state == State.INFECTE):
+            if (agent.etat == Etat.INFECTE):
                 infectes += 1
-            elif (agent.state == State.SAIN):
+            elif (agent.etat == Etat.SAIN):
                 sains += 1
-            elif (agent.state == State.GUERI):
+            elif (agent.etat == Etat.GUERI):
                 gueris += 1
         
         print(f"Tick {self.tick} : Sains {sains}, Infectés {infectes}, Guéris {gueris}")
