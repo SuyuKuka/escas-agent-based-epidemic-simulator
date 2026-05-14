@@ -15,7 +15,8 @@ class Simulation:
         self.height = height                    # Hauteur de la "map"
 
         self.tick = 0                               
-        self.agents = self.create_agents(nb_agents)
+        self.historique = []                        # Historique pour export avec json
+        self.agents = self.create_agents(nb_agents) # Agents de la sim
 
     def create_agents(self, nb_agents):
         agents = []
@@ -37,7 +38,7 @@ class Simulation:
     def update(self):
         self.move_agents()
         self.update_contagion()
-        self.print_snapshot()
+        self.save_snapshot()
         self.tick += 1
     
     def move_agents(self):
@@ -74,7 +75,7 @@ class Simulation:
             agent.etat = Etat.INFECTE
             agent.tick_etat = 0
 
-    def print_snapshot(self):
+    def save_snapshot(self):
         sains = 0
         infectes = 0
         gueris = 0
@@ -86,7 +87,12 @@ class Simulation:
             elif (agent.etat == Etat.GUERI):
                 gueris += 1
         
-        print(f"Tick {self.tick} : Sains {sains}, Infectés {infectes}, Guéris {gueris}")
+        self.historique.append({"tick": self.tick, "sains": sains, "infectes": infectes, "gueris": gueris})
+    
+    def build_json_dump(self):
+        return {"simulation" : {
+            "historique" : self.historique
+        }}
 
 
 

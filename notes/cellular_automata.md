@@ -1,5 +1,10 @@
 # Cellular Automata
+
 (= Automates Cellulaires) Les Automates Cellulaires étudient l'évolution d'état d'une grille de cellules en fonction de règles locales simples.
+
+https://fr.wikipedia.org/wiki/Automate_cellulaire
+
+## Etat de l'art
 
 1970 :
 - Game Of Life :

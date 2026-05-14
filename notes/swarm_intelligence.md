@@ -1,11 +1,17 @@
-# Swarm intelligence
+# Intelligence distribuée
 
-Swarm intelligence systems consist typically of a population of simple agents or boids interacting locally with one another and with their environment.
+Intelligence distribuée (ou Swarm intelligence) désigne un phénomène qui se produit lorsqu'au sein d'une population, les individus suivent tous des règles locales à eux-mêmes et qui à travers l'effet de groupe, font émerger un comportement collectif complexe et "intelligent".
 
-The agents follow very simple rules, and although there is no centralized control structure dictating how individual agents should behave, local, and to a certain degree random, interactions between such agents lead to the emergence of "intelligent" global behavior, unknown to the individual agents.
+Ces règles sont généralement très simples :
+- Aucun chef au sein du groupe
+- Le comportement dépend des autres individus proches et de l'environnement
 
-Exemples d'algorithmes :
-- Nid d'abeilles, colonie de fourmies
+Exemples :
+- Banc d'oiseaux, nid d'abeilles, colonie de fourmies
+
+https://fr.wikipedia.org/wiki/Intelligence_distribu%C3%A9e
+
+## Etat de l'art
 
 1987 :
 - Boids :

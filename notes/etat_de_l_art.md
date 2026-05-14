@@ -2,3 +2,5 @@
 
 L'état de l'art est l'état des connaissances dans un domaine (scientifique, technique, artistique, médical, etc.) à un instant donné.
 (= Désigne le niveau de développement le plus avancé dans un domaine scientifique ou artistique jamais atteint.)
+
+https://fr.wikipedia.org/wiki/%C3%89tat_de_l%27art
