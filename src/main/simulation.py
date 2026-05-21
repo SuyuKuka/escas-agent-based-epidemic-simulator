@@ -1,40 +1,48 @@
 from agent import *
+from environnement import *
+from pathogene import *
 
 class Simulation:
     # Constructeur
-    def __init__(self, seed, max_tick, rayon_contagion, proba_contagion, tick_guerison, nb_agents, width, height, nb_infect):
-        self.seed = seed                        # Graine pour random
-        self.max_tick = max_tick                # Nombre max de tick avant la fin de la sim
-        self.nb_infect = nb_infect        # Nombre d'infectés lors du début de la sim
-
-        self.rayon_contagion = rayon_contagion  # Rayon contagion
-        self.proba_contagion = proba_contagion  # Proba contagion ([0, 1])
-        self.tick_guerison = tick_guerison      # Nombre de tick avant guérison
-
-        self.width = width                      # Largeur de la "map"
-        self.height = height                    # Hauteur de la "map"
-
+    def __init__(self, max_tick, environnement, pathogene):
+        self.started = False
         self.tick = 0                               
+        self.max_tick = max_tick                # Nombre max de tick avant la fin de la sim
         self.historique = []                        # Historique pour export avec json
-        self.agents = self.create_agents(nb_agents) # Agents de la sim
+        self.agents = [] # Agents de la sim
+        self.agentIDIterator = 0
 
-    def create_agents(self, nb_agents):
-        agents = []
-        for i in range(nb_agents):
-            agents.append(Agent(i, round(random.uniform(0, self.width), 2), round(random.uniform(0, self.height), 2)))
-        return agents
-    
-    def start(self):
-        random.seed(self.seed)
-        self.infect_random()
+        self.environnement = environnement
+        self.pathogene = pathogene
+
+    def add_agents(self, sains, infectes, gueris):
+        for _ in range(sains):
+            self.agents.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.SAIN))
+            self.agentIDIterator += 1
+        for _ in range(infectes):
+            self.agents.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.INFECTE))
+            self.agentIDIterator += 1
+        for _ in range(gueris):
+            self.agents.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.GUERI))
+            self.agentIDIterator += 1
+
+    def start(self, seed):
+        if self.started:
+            return
+        random.seed(seed)
+        self.started = True
         for _ in range(self.max_tick):
             self.update()
-
-    def infect_random(self):
-        for _ in range(self.nb_infect):
-            agent = self.agents[random.randint(0, len(self.agents) - 1)]
-            agent.etat = Etat.INFECTE
-
+    
     def update(self):
         self.move_agents()
         self.update_contagion()
@@ -43,7 +51,7 @@ class Simulation:
     
     def move_agents(self):
         for agent in self.agents:
-            agent.move(self)
+            agent.move(self.environnement.largeur, self.environnement.hauteur)
 
     def update_contagion(self):
         nouveaux_infectes = []
@@ -52,7 +60,7 @@ class Simulation:
             agent.tick_etat += 1
             if (agent.etat == Etat.INFECTE):
                 # Guérison
-                if (agent.tick_etat == self.tick_guerison):
+                if (agent.tick_etat == self.pathogene.tick_guerison):
                     agent.etat = Etat.GUERI
                     agent.tick_etat = 0
                 else:
@@ -60,8 +68,8 @@ class Simulation:
                     for voisin in self.agents:
                         if voisin.etat == Etat.SAIN:
                             dist = (voisin.x - agent.x)**2 + (voisin.y - agent.y)**2
-                            if dist <= self.rayon_contagion**2:
-                                proba = self.proba_contagion
+                            if dist <= self.pathogene.rayon_contagion**2:
+                                proba = self.pathogene.proba_contagion
                                 if voisin.attitude == Attitude.PANIQUE:
                                     proba *= 1.3
                                 elif voisin.attitude == Attitude.CONFINE:
