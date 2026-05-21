@@ -17,16 +17,16 @@ class Attitude(Enum):
     CONFINE = 3
 
 class Agent:
-    def __init__(self, id, x, y):
+    def __init__(self, id, x, y, etat=Etat.SAIN, attitude=random_enum(Attitude)):
         self.id = id
         self.x = x
         self.y = y
-        self.etat = Etat.SAIN
+        self.etat = etat
         self.tick_etat = 0                      # Nombre de tick en étant dans l'état actuel
-        self.attitude = random_enum(Attitude)
+        self.attitude = attitude
         self.tick_attitude = 0                  # Nombre de tick en étant dans l'attitude actuel
     
-    def move(self, sim):
+    def move(self, max_largeur, max_hauteur):
         if (self.attitude == Attitude.NORMAL):
             RADIUS = 1
         elif (self.attitude == Attitude.PANIQUE):
@@ -43,8 +43,8 @@ class Agent:
         if (AGENT_DEBUG and self.attitude == Attitude.PANIQUE and ((move_x + move_y) > 1)):
             print(f"=== {self.id} a beaucoup bougé car panique")
 
-        self.x = clamp(self.x + move_x, 0, sim.width)
-        self.y = clamp(self.y + move_y, 0, sim.height)
+        self.x = clamp(self.x + move_x, 0, max_largeur)
+        self.y = clamp(self.y + move_y, 0, max_hauteur)
     
     def __str__(self):
         return f"Agent {self.id} ({str(self.etat)}): ({self.x}, {self.y})"
