@@ -240,7 +240,7 @@ class View:
         
         rayon_ecran_carre = RADIUS_DRAW_AGENT ** 2
 
-        for a in self.sim.get_agents():
+        for a in self.sim.agents:
             ax_ecran, ay_ecran = self.sim_pos_to_screen_pos((a.x, a.y))
             # print((ax_ecran, ay_ecran))
             distance_carre = (ax_ecran - mx)**2 + (ay_ecran - my)**2
@@ -264,7 +264,7 @@ class View:
         pygame.draw.rect(ecran, (30, 30, 45), (SIM_X, 0, SIM_W, H))
         pygame.draw.line(ecran, (60, 60, 80), (SIM_X, 0), (SIM_X, H))
 
-        for a in self.sim.get_agents():
+        for a in self.sim.agents:
             if a.shown:
                 self.draw_agent(a, ecran, a is self.agent_selectionne)
 

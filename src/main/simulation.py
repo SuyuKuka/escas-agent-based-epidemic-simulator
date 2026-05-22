@@ -24,6 +24,7 @@ class Simulation:
         self.pathogene = Pathogene(config)
         self.create_agents(config['range_nb_sains'][1], config['range_nb_infectes'][1], config['range_nb_gueris'][1])
         self.show_agents(config['nb_sains'], config['nb_infectes'], config['nb_gueris'])
+        self.agents = [*self.sains, *self.infectes, *self.gueris]
     
     def create_agents(self, max_sains, max_infectes, max_gueris):
         for _ in range(max_sains):
@@ -43,8 +44,6 @@ class Simulation:
                                      round(random.uniform(0, self.environnement.largeur), 2),
                                      round(random.uniform(0, self.environnement.hauteur), 2),
                                      Etat.GUERI))
-    def get_agents(self):
-        return self.sains + self.infectes + self.gueris
 
     def modify_agents_nb(self, nb_sains, nb_infectes, nb_gueris):
         (nb_sains, nb_infectes, nb_gueris) = self.show_agents(nb_sains, nb_infectes, nb_gueris)
@@ -66,7 +65,6 @@ class Simulation:
         return (nb_sains, nb_infectes, nb_gueris)
     
     def unshow_agents(self, nb_sains, nb_infectes, nb_gueris):
-
         while nb_sains < 0 and self.sains_shown > 0:
             self.sains[self.sains_shown - 1].shown = False
             self.sains_shown -= 1
