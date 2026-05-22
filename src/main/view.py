@@ -294,6 +294,9 @@ class View:
         rayon_ecran_carre = RADIUS_DRAW_AGENT ** 2
 
         for a in self.sim.agents:
+            if not a.shown:
+                continue
+            
             ax_ecran, ay_ecran = self.sim_pos_to_screen_pos((a.x, a.y))
             # print((ax_ecran, ay_ecran))
             distance_carre = (ax_ecran - mx)**2 + (ay_ecran - my)**2
