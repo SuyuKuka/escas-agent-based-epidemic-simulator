@@ -11,6 +11,9 @@
 
 ## Installation
 
+### Librairies
+pip install pygame pygame_gui
+
 ## Roadmap
 — Semaine 1-2 : Implémentation de base (V1)
 — Semaine 3-7 : Modularité, format de données et vue (V2)

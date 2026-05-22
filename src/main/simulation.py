@@ -4,18 +4,24 @@ from pathogene import *
 
 class Simulation:
     # Constructeur
-    def __init__(self, max_tick, environnement, pathogene):
-        self.started = False
-        self.tick = 0                               
-        self.max_tick = max_tick                # Nombre max de tick avant la fin de la sim
+    def __init__(self, config):
+        self.reset(config)
+
+    def reset(self, config):
+        random.seed(config['seed'])
+        self.tick = 0
         self.historique = []                        # Historique pour export avec json
-        self.agents = [] # Agents de la sim
+        self.agents = []                            # Agents de la sim
         self.agentIDIterator = 0
+        self.deleted_sains = [] 
+        self.deleted_infectes = []
+        self.deleted_gueris = []
 
-        self.environnement = environnement
-        self.pathogene = pathogene
+        self.environnement = Environnement(config)
+        self.pathogene = Pathogene(config)
+        self.create_agents(config['nb_sains'], config['nb_infectes'], config['nb_gueris'])
 
-    def add_agents(self, sains, infectes, gueris):
+    def create_agents(self, sains, infectes, gueris):
         for _ in range(sains):
             self.agents.append(Agent(self.agentIDIterator,
                                      round(random.uniform(0, self.environnement.largeur), 2),
@@ -34,20 +40,71 @@ class Simulation:
                                      round(random.uniform(0, self.environnement.hauteur), 2),
                                      Etat.GUERI))
             self.agentIDIterator += 1
-
-    def start(self, seed):
-        if self.started:
-            return
-        random.seed(seed)
-        self.started = True
-        for _ in range(self.max_tick):
-            self.update()
     
-    def update(self):
-        self.move_agents()
-        self.update_contagion()
-        self.save_snapshot()
-        self.tick += 1
+    def remove_agents(self, sains, infectes, gueris):
+        for i in range(len(self.agents) - 1, -1, -1):
+            agent = self.agents[i]
+            if agent == None:
+                continue
+
+            if sains == 0 and infectes == 0 and gueris == 0:
+                break
+
+            if (sains != 0 and agent != None and agent.etat == Etat.SAIN):
+                sains -= 1
+                self.agents[i] = None
+                self.deleted_sains.append((i, agent))
+            elif (infectes != 0 and agent != None and agent.etat == Etat.INFECTE):
+                infectes -= 1
+                self.agents[i] = None
+                self.deleted_infectes.append((i, agent))
+            elif (gueris != 0 and agent != None and agent.etat == Etat.GUERI):
+                gueris -= 1
+                self.agents[i] = None
+                self.deleted_gueris.append((i, agent))
+    
+    def add_agents(self, sains, infectes, gueris):
+        if (sains > 0):
+            for i in range(len(self.deleted_sains) - 1, -1, -1):
+                val = self.deleted_sains[i]
+                if val == None: continue
+
+                id, agent = val
+                self.agents[id] = agent
+
+                self.deleted_sains.pop()
+                sains -= 1
+                if (sains == 0): break
+        if (infectes > 0):
+            for i in range(len(self.deleted_infectes) - 1, -1, -1):
+                val = self.deleted_infectes[i]
+                if val == None: continue
+
+                id, agent = val
+                self.agents[id] = agent
+
+                self.deleted_infectes.pop()
+                infectes -= 1
+                if (infectes == 0): break
+        if (gueris > 0):
+            for i in range(len(self.deleted_gueris) - 1, -1, -1):
+                val = self.deleted_gueris[i]
+                if val == None: continue
+
+                id, agent = val
+                self.agents[id] = agent
+
+                self.deleted_gueris.pop()
+                gueris -= 1
+                if (gueris == 0): break
+        self.create_agents(sains, infectes, gueris)
+
+    def update(self, step):
+        for _ in range(step):
+            self.move_agents()
+            self.update_contagion()
+            self.save_snapshot()
+            self.tick += 1
     
     def move_agents(self):
         for agent in self.agents:
