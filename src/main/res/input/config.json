@@ -1,0 +1,63 @@
+{
+    "name": "Epidemics and Social Contagion Agent-based Simulator (ESCAS)",
+    "range_exec_tick": [
+        1,
+        100000
+    ],
+    "range_seed": [
+        0,
+        30000
+    ],
+    "exec_tick": 5000,
+    "seed": 0,
+    "range_update_speed": [
+        1,
+        60
+    ],
+    "range_update_step": [
+        1,
+        100
+    ],
+    "update_speed": 20,
+    "update_step": 1,
+    "range_largeur": [
+        10,
+        10000
+    ],
+    "range_hauteur": [
+        10,
+        10000
+    ],
+    "largeur": 100,
+    "hauteur": 100,
+    "range_rayon_contagion": [
+        0,
+        10000
+    ],
+    "range_proba_contagion": [
+        0,
+        1
+    ],
+    "range_tick_guerison": [
+        1,
+        100000
+    ],
+    "rayon_contagion": 1,
+    "proba_contagion": 0.3,
+    "tick_guerison": 100,
+    "range_nb_sains": [
+        0,
+        300
+    ],
+    "range_nb_infectes": [
+        0,
+        300
+    ],
+    "range_nb_gueris": [
+        0,
+        300
+    ],
+    "nb_sains": 1,
+    "nb_infectes": 0,
+    "nb_gueris": 0
+}

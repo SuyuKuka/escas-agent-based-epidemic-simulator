@@ -1,6 +1,8 @@
 import pygame
+import pygame.gfxdraw
 import os
 import pygame_gui
+import json
 from simulation import *
 
 W, H = 1200, 700
@@ -52,6 +54,17 @@ class View:
         self.sliders = {}
         self.valeurs_labels = {}
 
+        self.import_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(10, 10, 85, 30),
+            text='Import',
+            manager=manager
+        )
+        self.export_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(105, 10, 85, 30),
+            text='Export',
+            manager=manager
+        )
+
         controles = [
             {"id": "exec_tick", "label": "Tick", "default": config['exec_tick'], "range": config['range_exec_tick']},
             {"id": "seed", "label": "Seed", "default": config['seed'], "range": config['range_seed']},
@@ -72,13 +85,13 @@ class View:
         ]
 
         largeur_scroll_list = SIM_X - 10
-        hauteur_scroll_list = H - 150
+        hauteur_scroll_list = H - 145
 
         hauteur_interne_scroll = len(controles) * 85 # Nombre de pixel alloué pour le scroll
         
         # Scroll container
         self.scroll_container = pygame_gui.elements.UIScrollingContainer(
-            relative_rect=pygame.Rect(10, 20, largeur_scroll_list, hauteur_scroll_list),
+            relative_rect=pygame.Rect(10, 50, largeur_scroll_list, hauteur_scroll_list),
             manager=manager
         )
 
@@ -99,26 +112,28 @@ class View:
             else:
                 pas = 1
             
+            width_title = 140
+            width_value = 40
+            height_box = 30
+
             # Label Nom
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, 135, 25),
+                relative_rect=pygame.Rect(start_x, current_y, width_title, height_box),
                 text=ctrl["label"],
                 manager=manager,
                 container=self.scroll_container
             )
 
-            # Label Valeur
             self.valeurs_labels[ctrl["id"]] = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + 115, current_y, 50, 25),
+                relative_rect=pygame.Rect(start_x + width_title, current_y, width_value, height_box),
                 text=str(ctrl["default"]),
                 manager=manager,
                 container=self.scroll_container
             )
-            current_y += 25
+            current_y += height_box
 
-            # Slider
             self.sliders[ctrl["id"]] = pygame_gui.elements.UIHorizontalSlider(
-                relative_rect=pygame.Rect(start_x, current_y, 165, 30),
+                relative_rect=pygame.Rect(start_x, current_y, 170, height_box),
                 start_value=ctrl["default"],
                 value_range=ctrl["range"],
                 manager=manager,
@@ -127,14 +142,12 @@ class View:
             )
             current_y += 30
 
-            # Label Range Min
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, 30, 20),
+                relative_rect=pygame.Rect(start_x, current_y, 50, 20),
                 text=str(ctrl["range"][0]),
                 manager=manager,
                 container=self.scroll_container
             )
-            # Label Range Max
             pygame_gui.elements.UILabel(
                 relative_rect=pygame.Rect(start_x + 115, current_y, 50, 20),
                 text=str(ctrl["range"][1]),
@@ -143,16 +156,17 @@ class View:
             )
             current_y += 20 + spacing
 
-        current_y = H - 100
+        current_y = H - 105
 
         # Bouton bottom
+        bouton_x = (SIM_X - 170) // 2
         self.start_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(start_x, current_y + 25, 170, 30),
+            relative_rect=pygame.Rect(bouton_x, current_y + 25, 170, 30),
             text='Start Simulation',
             manager=manager
         )
         self.reset_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(start_x, current_y + 55, 170, 30),
+            relative_rect=pygame.Rect(bouton_x, current_y + 55, 170, 30),
             text='Reset',
             manager=manager
         )
@@ -224,6 +238,30 @@ class View:
             self.start_button.set_text('Start')
             self.agent_selectionne = None 
             self.agent_info_ouvert = False
+        elif event.ui_element == self.export_button:
+            with open('res/input/config.json', 'w') as f:
+                json.dump(self.config, f, indent=4)
+            print("Configuration sauvegardée dans 'config.json' !")
+        elif event.ui_element == self.import_button:
+            if os.path.exists('res/input/config.json'):
+                with open('res/input/config.json', 'r') as f:
+                    nouvelle_config = json.load(f)
+                    for cle, valeur in nouvelle_config.items():
+                        self.config[cle] = valeur
+                    
+                    for ctrl_id, slider in self.sliders.items():
+                        if ctrl_id in self.config:
+                            slider.set_current_value(self.config[ctrl_id])
+                            self.valeurs_labels[ctrl_id].set_text(str(self.config[ctrl_id]))
+
+                    self.sim.reset(self.config)
+                    self.sim_running = False
+                    self.start_button.set_text('Start')
+                    self.agent_selectionne = None
+                    self.agent_info_ouvert = False
+                print("Configuration chargée avec succès !")
+            else:
+                print("Erreur : Aucun fichier 'res/input/config.json' trouvé.")
     
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
@@ -308,9 +346,13 @@ class View:
 
     def draw_agent(self, agent, ecran, est_selection):
         pos = self.sim_pos_to_screen_pos((agent.x, agent.y))
-        pygame.draw.circle(ecran, get_agent_couleur(agent), (pos[0], pos[1]), RADIUS_DRAW_AGENT)
+        couleur = get_agent_couleur(agent)
+        
+        pygame.gfxdraw.aacircle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT, couleur)
+        pygame.gfxdraw.filled_circle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT, couleur)
+        
         if (est_selection):
-            pygame.draw.circle(ecran, (255, 220, 0), (pos[0], pos[1]), 12, 2)
+            pygame.gfxdraw.aacircle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT + 4, (255, 220, 0))
         
     def sim_pos_to_screen_pos(self, xy):
         scale_x = SIM_W / self.sim.environnement.largeur
