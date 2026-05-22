@@ -139,16 +139,17 @@ class View:
 
             current_y += 20 + spacing
 
-        current_y = H - 90
-        # Bouton démarrer
-        pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect(start_x, current_y, 170, 30),
-            text="Start Simulation",
-            manager=manager
-        )
+        current_y = H - 100
+
+        # Bouton bottom
         self.start_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(start_x, current_y + 25, 170, 30),
-            text='[>]',
+            text='Start Simulation',
+            manager=manager
+        )
+        self.reset_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(start_x, current_y + 55, 170, 30),
+            text='Reset',
             manager=manager
         )
     
@@ -196,6 +197,7 @@ class View:
                 
                     if (self.sim.tick == self.config['exec_tick']):
                         self.sim_running = False
+                        self.start_button.set_text('Start')
                         sim_accumulator = 0.0
                         break
 
@@ -207,11 +209,16 @@ class View:
     def check_button_click(self, event):
         if event.ui_element == self.start_button:
             # print(self.config['exec_tick'])
-            if (self.sim.tick == self.config['exec_tick']):
-                self.sim.reset(self.config)
-                return
-            print(f"Simulation : {str(not self.sim_running)}")
             self.sim_running = not self.sim_running
+            if self.sim_running:
+                self.start_button.set_text('Pause')
+            else:
+                self.start_button.set_text('Start')
+        elif event.ui_element == self.reset_button:
+            print("Reset de la simulation")
+            self.sim.reset(self.config)
+            self.sim_running = False
+            self.start_button.set_text('Start')
     
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
