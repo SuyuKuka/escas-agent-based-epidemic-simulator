@@ -9,8 +9,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 
 W, H = 1200, 700
-SIM_X = 200                         # zone simulation commence ici
-SIM_W = 750                         # largeur zone simulation
+SIM_X = 250                         # zone simulation commence ici
+SIM_W = 700                         # largeur zone simulation
 PANEL_W = W - SIM_X - SIM_W         # largeur panneau info agent (droite)
 FPS = 60
 COULEURS = {Etat.SAIN: (70, 130, 220),
@@ -70,38 +70,37 @@ class View:
         )
 
         controles = [
-            {"id": "exec_tick", "label": "Tick", "default": config['exec_tick'], "range": config['range_exec_tick']},
+            {"id": "exec_tick", "label": "Tick avant fin", "default": config['exec_tick'], "range": config['range_exec_tick']},
             {"id": "seed", "label": "Seed", "default": config['seed'], "range": config['range_seed']},
 
             {"id": "update_speed", "label": "Update par seconde", "default": config['update_speed'], "range": config['range_update_speed']},
             {"id": "update_step", "label": "Update par update", "default": config['update_step'], "range": config['range_update_step']},
 
-            {"id": "largeur", "label": "Largeur", "default": config['largeur'], "range": config['range_largeur']},
-            {"id": "hauteur", "label": "Hauteur", "default": config['hauteur'], "range": config['range_hauteur']},
+            {"id": "largeur", "label": "Largeur de la sim.", "default": config['largeur'], "range": config['range_largeur']},
+            {"id": "hauteur", "label": "Hauteur de la sim.", "default": config['hauteur'], "range": config['range_hauteur']},
 
-            {"id": "rayon_contagion", "label": "Rayon contagion", "default": config['rayon_contagion'], "range": config['range_rayon_contagion']},
-            {"id": "proba_contagion", "label": "Proba contagion", "default": config['proba_contagion'], "range": config['range_proba_contagion']},
-            {"id": "tick_guerison", "label": "Tick Guérison", "default": config['tick_guerison'], "range": config['range_tick_guerison']},
+            {"id": "rayon_contagion", "label": "Rayon de contagion", "default": config['rayon_contagion'], "range": config['range_rayon_contagion']},
+            {"id": "proba_contagion", "label": "Proba. de contagion (%)", "default": config['proba_contagion'], "range": config['range_proba_contagion']},
+            {"id": "tick_guerison", "label": "Tick avant guérison", "default": config['tick_guerison'], "range": config['range_tick_guerison']},
 
-            {"id": "nb_sains", "label": "nb sains", "default": config['nb_sains'], "range": config['range_nb_sains']},
-            {"id": "nb_infectes", "label": "nb infectés", "default": config['nb_infectes'], "range": config['range_nb_infectes']},
-            {"id": "nb_gueris", "label": "nb guéris", "default": config['nb_gueris'], "range": config['range_nb_gueris']},
+            {"id": "nb_sains", "label": "Nombre de Sains", "default": config['nb_sains'], "range": config['range_nb_sains']},
+            {"id": "nb_infectes", "label": "Nombre d'Infectés", "default": config['nb_infectes'], "range": config['range_nb_infectes']},
+            {"id": "nb_gueris", "label": "Nombre de Guéris", "default": config['nb_gueris'], "range": config['range_nb_gueris']},
         ]
 
-        largeur_scroll_list = SIM_X - 10
         hauteur_scroll_list = H - 145
 
         hauteur_interne_scroll = len(controles) * 85 # Nombre de pixel alloué pour le scroll
         
         # Scroll container
         self.scroll_container = pygame_gui.elements.UIScrollingContainer(
-            relative_rect=pygame.Rect(10, 50, largeur_scroll_list, hauteur_scroll_list),
+            relative_rect=pygame.Rect(0, 50, SIM_X, hauteur_scroll_list),
             manager=manager
         )
 
         # On ajuste la zone virtuelle de défilement
         self.scroll_container.set_scrollable_area_dimensions(
-            (largeur_scroll_list - 25, hauteur_interne_scroll)
+            (SIM_X - 20, hauteur_interne_scroll)
         )
 
         start_x = 0
@@ -115,44 +114,46 @@ class View:
             else:
                 pas = 1
             
-            width_title = 140
-            width_value = 40
             height_box = 30
 
-            # Label Nom
+            # Label Texte
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, width_title, height_box),
+                relative_rect=pygame.Rect(5, current_y, 200, height_box),
                 text=ctrl["label"],
                 manager=manager,
                 container=self.scroll_container
             )
 
+            # Label valeur
             self.valeurs_labels[ctrl["id"]] = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + width_title - 12, current_y, width_value, height_box),
+                relative_rect=pygame.Rect(180, current_y, 50, height_box),
                 text=str(ctrl["default"]),
                 manager=manager,
                 container=self.scroll_container
             )
             current_y += height_box
 
+            # Slider
             self.sliders[ctrl["id"]] = pygame_gui.elements.UIHorizontalSlider(
-                relative_rect=pygame.Rect(start_x, current_y, 170, height_box),
+                relative_rect=pygame.Rect(0, current_y, 230, height_box),
                 start_value=ctrl["default"],
                 value_range=ctrl["range"],
                 manager=manager,
                 container=self.scroll_container,
                 click_increment=pas
             )
-            current_y += 30
+            current_y += 25
 
+            # Label min
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, 50, 20),
+                relative_rect=pygame.Rect(0, current_y, 50, height_box),
                 text=str(ctrl["range"][0]),
                 manager=manager,
                 container=self.scroll_container
             )
+            # Label max
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + 115, current_y, 50, 20),
+                relative_rect=pygame.Rect(180, current_y, 50, height_box),
                 text=str(ctrl["range"][1]),
                 manager=manager,
                 container=self.scroll_container
