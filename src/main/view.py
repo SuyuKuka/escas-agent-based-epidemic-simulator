@@ -255,6 +255,7 @@ class View:
             pygame.display.flip()
 
     def check_button_click(self, event):
+        config_path = BASE_DIR / 'res' / 'input' / 'config.json'
         if event.ui_element == self.start_button:
             # print(self.config['exec_tick'])
             self.sim_running = not self.sim_running
@@ -272,12 +273,12 @@ class View:
             self.agent_selectionne = None 
             self.agent_info_ouvert = False
         elif event.ui_element == self.export_button:
-            with open('res/input/config.json', 'w') as f:
+            with open(config_path, 'w') as f:
                 json.dump(self.config, f, indent=4)
             print("Configuration sauvegardée dans 'config.json' !")
         elif event.ui_element == self.import_button:
-            if os.path.exists('res/input/config.json'):
-                with open('res/input/config.json', 'r') as f:
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
                     nouvelle_config = json.load(f)
                     for cle, valeur in nouvelle_config.items():
                         self.config[cle] = valeur
