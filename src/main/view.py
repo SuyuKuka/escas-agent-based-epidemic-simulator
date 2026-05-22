@@ -296,7 +296,7 @@ class View:
         for a in self.sim.agents:
             if not a.shown:
                 continue
-            
+
             ax_ecran, ay_ecran = self.sim_pos_to_screen_pos((a.x, a.y))
             # print((ax_ecran, ay_ecran))
             distance_carre = (ax_ecran - mx)**2 + (ay_ecran - my)**2
@@ -328,24 +328,41 @@ class View:
         pygame.draw.rect(ecran, (25, 25, 40), (0, 0, SIM_X, H))
 
         # Panneau droite (fond)
-        pygame.draw.rect(ecran, (20, 20, 30), (SIM_X + SIM_W, 0, PANEL_W, H))
+        px = SIM_X + SIM_W
 
-        # Panneau infos droite (apparaît si agent sélectionné)
+        pygame.draw.rect(ecran, (35, 35, 55), (px + 1, 0, PANEL_W, H))
         pygame.draw.line(ecran, (60, 60, 80), (W - PANEL_W, 0), (W - PANEL_W, H))
+
+        font_titre = pygame.font.SysFont("monospace", 22, bold=True)
+        titre_surf = font_titre.render("Informations", True, (255, 255, 255))
+        titre_rect = titre_surf.get_rect(center=(px + (PANEL_W // 2), 30))
+        ecran.blit(titre_surf, titre_rect)
+
+        pygame.draw.line(ecran, (80, 80, 100), (px + 20, 50), (px + PANEL_W - 20, 50))
+        font_texte = pygame.font.SysFont("monospace", 16)
+        # Panneau infos droite (apparaît si agent sélectionné)
         if self.agent_info_ouvert and self.agent_selectionne:
             a = self.agent_selectionne
-            px = SIM_X + SIM_W
-            pygame.draw.rect(ecran, (35, 35, 55), (px + 1, 0, PANEL_W, H))
-
-            font = pygame.font.SysFont("monospace", 18)
+            state = a.etat.name if hasattr(a.etat, 'name') else str(a.etat)
             infos = [
                 f"Agent #{a.id}",
-                f"État : {a.etat}",
+                f"État : {state}",
                 f"Pos : ({round(a.x, 2)}, {round(a.y, 2)})",
             ]
+
             for i, ligne in enumerate(infos):
-                surf = font.render(ligne, True, (200, 200, 210))
-                ecran.blit(surf, (px + 15, 40 + i * 35))
+                surf = font_texte.render(ligne, True, (200, 200, 210))
+                ecran.blit(surf, (px + 15, 70 + i * 35))
+        else:
+            lignes_defaut = [
+                "Nothing to show,",
+                "click on an agent",
+                "for more info."
+            ]
+            for i, ligne in enumerate(lignes_defaut):
+                surf = font_texte.render(ligne, True, (200, 200, 210))
+                rect = surf.get_rect(center=(px + (PANEL_W // 2), 120 + i * 25))
+                ecran.blit(surf, rect)
 
     def draw_agent(self, agent, ecran, est_selection):
         pos = self.sim_pos_to_screen_pos((agent.x, agent.y))
