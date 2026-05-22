@@ -11,12 +11,12 @@ name = "Epidemics and Social Contagion Agent-based Simulator (ESCAS)"
 ## Simulation
 range_exec_tick = (1, 100000)
 range_seed = (0, 30000)
-exec_tick = 5
+exec_tick = 5000
 seed = 0
 
 range_update_speed = (1, 60)
 range_update_step = (1, 100)         
-update_speed = 1                   # Nombre d'update par seconde de la sim
+update_speed = 20                   # Nombre d'update par seconde de la sim
 update_step = 1                     # Nombre d'update à la fois par update de la sim
 
 ## Environnement
