@@ -173,6 +173,12 @@ class View:
             text='Reset',
             manager=manager
         )
+
+        self.graph_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(W - PANEL_W + 20, H - 50, PANEL_W - 40, 30),
+            text='Afficher le graphique',
+            manager=manager
+        )
     
     def runloop(self):
         manager = self.manager
@@ -224,7 +230,7 @@ class View:
                         break
 
             self.draw(dt)
-
+            self.update_graph()
             manager.draw_ui(ecran)
             pygame.display.flip()
 
@@ -268,6 +274,8 @@ class View:
                 print("Configuration chargée avec succès !")
             else:
                 print("Erreur : Aucun fichier 'res/input/config.json' trouvé.")
+        elif event.ui_element == self.graph_button:
+            self.open_graph()
     
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
@@ -404,3 +412,75 @@ class View:
         sim_y = xy[1] * scale_y
         
         return (float(sim_x), float(sim_y))
+
+    def open_graph(self):
+        if hasattr(self, 'fenetre_graphe') and self.fenetre_graphe is not None:
+            self.fenetre_graphe.kill()
+            
+        rect_fenetre = pygame.Rect((W // 2 - 300, H // 2 - 200), (600, 400))
+        
+        self.fenetre_graphe = pygame_gui.elements.UIWindow(
+            rect=rect_fenetre,
+            manager=self.manager,
+            window_display_title="Évolution de la population (Modèle SIR)",
+            resizable=False
+        )
+        
+        self.graph_w = 568
+        self.graph_h = 330
+        
+        self.graph_surface = pygame.Surface((self.graph_w, self.graph_h))
+        self.graph_surface.fill((30, 30, 40))
+        
+        self.graph_image = pygame_gui.elements.UIImage(
+            relative_rect=pygame.Rect(0, 0, self.graph_w, self.graph_h),
+            image_surface=self.graph_surface,
+            manager=self.manager,
+            container=self.fenetre_graphe
+        )
+
+    def update_graph(self):
+        if not hasattr(self, 'fenetre_graphe') or not self.fenetre_graphe.alive():
+            return
+            
+        historique = self.sim.historique
+        if len(historique) < 2:
+            return
+
+        self.graph_surface.fill((30, 30, 40))
+        
+        for i in range(1, 5):
+            y_ligne = i * (self.graph_h / 5)
+            pygame.draw.line(self.graph_surface, (50, 50, 60), (0, y_ligne), (self.graph_w, y_ligne))
+
+        max_pop = max([d["sains"] + d["infectes"] + d["gueris"] for d in historique])
+        if max_pop == 0: max_pop = 1
+        
+        min_tick = historique[0]["tick"]
+        max_tick = historique[-1]["tick"]
+        delta_tick = max_tick - min_tick
+        if delta_tick == 0: delta_tick = 1
+
+        scale_x = self.graph_w / delta_tick
+        scale_y = (self.graph_h - 10) / max_pop 
+
+        points_sains = []
+        points_infectes = []
+        points_gueris = []
+
+        for data in historique:
+            x = (data["tick"] - min_tick) * scale_x
+            
+            y_sain = self.graph_h - (data["sains"] * scale_y)
+            y_infecte = self.graph_h - (data["infectes"] * scale_y)
+            y_gueri = self.graph_h - (data["gueris"] * scale_y)
+            
+            points_sains.append((x, y_sain))
+            points_infectes.append((x, y_infecte))
+            points_gueris.append((x, y_gueri))
+
+        pygame.draw.lines(self.graph_surface, (70, 130, 220), False, points_sains, 2)
+        pygame.draw.lines(self.graph_surface, (220, 60, 60), False, points_infectes, 2)
+        pygame.draw.lines(self.graph_surface, (50, 180, 100), False, points_gueris, 2)
+        
+        self.graph_image.set_image(self.graph_surface)
