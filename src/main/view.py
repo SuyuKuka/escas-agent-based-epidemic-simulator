@@ -36,7 +36,7 @@ class View:
         pygame.display.set_caption(self.config['name'])
         self.ecran = pygame.display.set_mode((W, H), pygame.SCALED)
         self.clock = pygame.time.Clock()
-        self.manager = pygame_gui.UIManager((W, H))
+        self.manager = pygame_gui.UIManager((W, H), 'res/theme/theme.json')
     
     def init_sim(self):
         self.sim = Simulation(self.config)
@@ -106,7 +106,6 @@ class View:
 
         for ctrl in controles:
             # TODO: Désactiver les sliders durant la simulation et les reactiver quand elle ne run plus
-            
             if ctrl["id"] == "proba_contagion":
                 pas = 0.05
             else:
@@ -125,7 +124,7 @@ class View:
             )
 
             self.valeurs_labels[ctrl["id"]] = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + width_title, current_y, width_value, height_box),
+                relative_rect=pygame.Rect(start_x + width_title - 12, current_y, width_value, height_box),
                 text=str(ctrl["default"]),
                 manager=manager,
                 container=self.scroll_container
@@ -216,6 +215,7 @@ class View:
                     if (self.sim.tick == self.config['exec_tick']):
                         self.sim_running = False
                         self.start_button.set_text('Start')
+                        self.set_sliders(True)
                         sim_accumulator = 0.0
                         break
 
@@ -230,8 +230,10 @@ class View:
             self.sim_running = not self.sim_running
             if self.sim_running:
                 self.start_button.set_text('Pause')
+                self.set_sliders(False)
             else:
                 self.start_button.set_text('Start')
+                self.set_sliders(True)
         elif event.ui_element == self.reset_button:
             self.sim.reset(self.config)
             self.sim_running = False
@@ -312,6 +314,7 @@ class View:
 
     def draw(self, dt):
         ecran = self.ecran
+        px = SIM_X + SIM_W
         
         # Fond
         ecran.fill((20, 20, 30))
@@ -328,8 +331,6 @@ class View:
         pygame.draw.rect(ecran, (25, 25, 40), (0, 0, SIM_X, H))
 
         # Panneau droite (fond)
-        px = SIM_X + SIM_W
-
         pygame.draw.rect(ecran, (35, 35, 55), (px + 1, 0, PANEL_W, H))
         pygame.draw.line(ecran, (60, 60, 80), (W - PANEL_W, 0), (W - PANEL_W, H))
 
@@ -351,7 +352,7 @@ class View:
             ]
 
             for i, ligne in enumerate(infos):
-                surf = font_texte.render(ligne, True, (200, 200, 210))
+                surf = font_texte.render(ligne, True, (255, 255, 255))
                 ecran.blit(surf, (px + 15, 70 + i * 35))
         else:
             lignes_defaut = [
@@ -360,7 +361,7 @@ class View:
                 "for more info."
             ]
             for i, ligne in enumerate(lignes_defaut):
-                surf = font_texte.render(ligne, True, (200, 200, 210))
+                surf = font_texte.render(ligne, True, (255, 255, 255))
                 rect = surf.get_rect(center=(px + (PANEL_W // 2), 120 + i * 25))
                 ecran.blit(surf, rect)
 
@@ -373,6 +374,13 @@ class View:
         
         if (est_selection):
             pygame.gfxdraw.aacircle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT + 4, (255, 220, 0))
+
+    def set_sliders(self, enabled: bool):
+        for slider in self.sliders.values():
+            if enabled:
+                slider.enable()
+            else:
+                slider.disable()
         
     def sim_pos_to_screen_pos(self, xy):
         scale_x = SIM_W / self.sim.environnement.largeur
