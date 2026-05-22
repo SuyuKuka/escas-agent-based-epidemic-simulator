@@ -93,7 +93,12 @@ class View:
 
         for ctrl in controles:
             # TODO: Désactiver les sliders durant la simulation et les reactiver quand elle ne run plus
-            # 
+            
+            if ctrl["id"] == "proba_contagion":
+                pas = 0.05
+            else:
+                pas = 1
+            
             # Label Nom
             pygame_gui.elements.UILabel(
                 relative_rect=pygame.Rect(start_x, current_y, 135, 25),
@@ -109,7 +114,6 @@ class View:
                 manager=manager,
                 container=self.scroll_container
             )
-
             current_y += 25
 
             # Slider
@@ -118,7 +122,8 @@ class View:
                 start_value=ctrl["default"],
                 value_range=ctrl["range"],
                 manager=manager,
-                container=self.scroll_container
+                container=self.scroll_container,
+                click_increment=pas
             )
             current_y += 30
 
@@ -136,7 +141,6 @@ class View:
                 manager=manager,
                 container=self.scroll_container
             )
-
             current_y += 20 + spacing
 
         current_y = H - 100
@@ -229,9 +233,12 @@ class View:
                 old_nb_infectes = self.config["nb_infectes"]
                 old_nb_gueris = self.config["nb_gueris"]
 
-                valeur_entiere = int(event.value)
-                self.config[ctrl_id] = valeur_entiere
-                self.valeurs_labels[ctrl_id].set_text(str(valeur_entiere))
+                if ctrl_id == "proba_contagion":
+                    valeur = round(float(event.value), 2)
+                else:
+                    valeur = int(event.value)
+                self.config[ctrl_id] = valeur
+                self.valeurs_labels[ctrl_id].set_text(str(valeur))
 
                 if ctrl_id == "seed" or ctrl_id == "largeur" or ctrl_id == "hauteur":
                     self.sim.reset(self.config)
