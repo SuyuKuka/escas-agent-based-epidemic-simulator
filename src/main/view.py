@@ -58,13 +58,18 @@ class View:
         self.sliders = {}
         self.valeurs_labels = {}
 
+        mergin_left = 35
+        width_button = 85
+        space = 10
+
         self.import_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(10, 10, 85, 30),
+            relative_rect=pygame.Rect(mergin_left, 10, width_button, 30),
             text='Import',
             manager=manager
         )
+        
         self.export_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(105, 10, 85, 30),
+            relative_rect=pygame.Rect(mergin_left + width_button + space, 10, width_button, 30),
             text='Export',
             manager=manager
         )
@@ -108,7 +113,6 @@ class View:
         spacing = 5
 
         for ctrl in controles:
-            # TODO: Désactiver les sliders durant la simulation et les reactiver quand elle ne run plus
             if ctrl["id"] == "proba_contagion":
                 pas = 0.05
             else:
