@@ -216,18 +216,23 @@ class View:
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
             if event.ui_element == slider:
-                # TODO: Ajouter/Supprimer des agents
-                # 1. Garder l'ancien nombre
-                # 2. Si >0 appeler add avec la différence
-                # 3. Si <0 appeler remove avec la différence
-                # if ctrl_id == "nb_sains" or ctrl_id == "nb_infectes" or ctrl_id == "nb_gueris":
-                #     self.sim.cr
+                # Variable pour mis à jour nombre d'agent
+                old_nb_sains = self.config["nb_sains"]
+                old_nb_infectes = self.config["nb_infectes"]
+                old_nb_gueris = self.config["nb_gueris"]
+
                 valeur_entiere = int(event.value)
                 self.config[ctrl_id] = valeur_entiere
                 self.valeurs_labels[ctrl_id].set_text(str(valeur_entiere))
 
                 if ctrl_id == "seed" or ctrl_id == "largeur" or ctrl_id == "hauteur":
                     self.sim.reset(self.config)
+                elif ctrl_id == "nb_sains":
+                    self.sim.modify_agents_nb(self.config[ctrl_id] - old_nb_sains, 0, 0)
+                elif ctrl_id == "nb_infectes":
+                    self.sim.modify_agents_nb(0, self.config[ctrl_id] - old_nb_infectes, 0)
+                elif ctrl_id == "nb_gueris":
+                    self.sim.modify_agents_nb(0, 0, self.config[ctrl_id] - old_nb_gueris)
 
     
     def return_agent_click(self, mx, my):
@@ -235,7 +240,7 @@ class View:
         
         rayon_ecran_carre = RADIUS_DRAW_AGENT ** 2
 
-        for a in self.sim.agents:
+        for a in self.sim.get_agents():
             ax_ecran, ay_ecran = self.sim_pos_to_screen_pos((a.x, a.y))
             # print((ax_ecran, ay_ecran))
             distance_carre = (ax_ecran - mx)**2 + (ay_ecran - my)**2
@@ -259,8 +264,9 @@ class View:
         pygame.draw.rect(ecran, (30, 30, 45), (SIM_X, 0, SIM_W, H))
         pygame.draw.line(ecran, (60, 60, 80), (SIM_X, 0), (SIM_X, H))
 
-        for a in self.sim.agents:
-            self.draw_agent(a, ecran, a is self.agent_selectionne)
+        for a in self.sim.get_agents():
+            if a.shown:
+                self.draw_agent(a, ecran, a is self.agent_selectionne)
 
         # Panneau gauche (fond)
         pygame.draw.rect(ecran, (25, 25, 40), (0, 0, SIM_X, H))

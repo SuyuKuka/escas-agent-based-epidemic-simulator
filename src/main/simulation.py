@@ -9,19 +9,78 @@ class Simulation:
 
     def reset(self, config):
         random.seed(config['seed'])
+        self.is_running = False
         self.tick = 0
         self.historique = []                        # Historique pour export avec json
-        self.agents = []                            # Agents de la sim
+        self.sains = []
+        self.sains_shown = 0
+        self.infectes = []
+        self.infectes_shown = 0
+        self.gueris = []
+        self.gueris_shown = 0
         self.agentIDIterator = 0
-        self.deleted_sains = [] 
-        self.deleted_infectes = []
-        self.deleted_gueris = []
 
         self.environnement = Environnement(config)
         self.pathogene = Pathogene(config)
-        self.create_agents(config['nb_sains'], config['nb_infectes'], config['nb_gueris'])
+        self.create_agents(config['range_nb_sains'][1], config['range_nb_infectes'][1], config['range_nb_gueris'][1])
+        self.show_agents(config['nb_sains'], config['nb_infectes'], config['nb_gueris'])
+    
+    def create_agents(self, max_sains, max_infectes, max_gueris):
+        for _ in range(max_sains):
+            self.sains.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.SAIN))
+            self.agentIDIterator += 1
+        for _ in range(max_infectes):
+            self.infectes.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.INFECTE))
+            self.agentIDIterator += 1
+        for _ in range(max_gueris):
+            self.gueris.append(Agent(self.agentIDIterator,
+                                     round(random.uniform(0, self.environnement.largeur), 2),
+                                     round(random.uniform(0, self.environnement.hauteur), 2),
+                                     Etat.GUERI))
+    def get_agents(self):
+        return self.sains + self.infectes + self.gueris
 
-    def create_agents(self, sains, infectes, gueris):
+    def modify_agents_nb(self, nb_sains, nb_infectes, nb_gueris):
+        (nb_sains, nb_infectes, nb_gueris) = self.show_agents(nb_sains, nb_infectes, nb_gueris)
+        self.unshow_agents(nb_sains, nb_infectes, nb_gueris)
+        
+    def show_agents(self, nb_sains, nb_infectes, nb_gueris):
+        while nb_sains > 0 and self.sains_shown < len(self.sains):
+            self.sains[self.sains_shown].shown = True
+            self.sains_shown += 1
+            nb_sains -= 1
+        while nb_infectes > 0 and self.infectes_shown < len(self.infectes):
+            self.infectes[self.infectes_shown].shown = True
+            self.infectes_shown += 1
+            nb_infectes -= 1
+        while nb_gueris > 0 and self.gueris_shown < len(self.gueris):
+            self.gueris[self.gueris_shown].shown = True
+            self.gueris_shown += 1
+            nb_gueris -= 1
+        return (nb_sains, nb_infectes, nb_gueris)
+    
+    def unshow_agents(self, nb_sains, nb_infectes, nb_gueris):
+
+        while nb_sains < 0 and self.sains_shown > 0:
+            self.sains[self.sains_shown - 1].shown = False
+            self.sains_shown -= 1
+            nb_sains += 1
+        while nb_infectes < 0 and self.infectes_shown > 0:
+            self.infectes[self.infectes_shown - 1].shown = False
+            self.infectes_shown -= 1
+            nb_infectes += 1
+        while nb_gueris < 0 and self.gueris_shown > 0:
+            self.gueris[self.gueris_shown - 1].shown = False
+            self.gueris_shown -= 1
+            nb_gueris += 1
+
+    def add_new_agents(self, sains, infectes, gueris):
         for _ in range(sains):
             self.agents.append(Agent(self.agentIDIterator,
                                      round(random.uniform(0, self.environnement.largeur), 2),
@@ -41,63 +100,13 @@ class Simulation:
                                      Etat.GUERI))
             self.agentIDIterator += 1
     
-    def remove_agents(self, sains, infectes, gueris):
-        for i in range(len(self.agents) - 1, -1, -1):
-            agent = self.agents[i]
-            if agent == None:
-                continue
-
-            if sains == 0 and infectes == 0 and gueris == 0:
-                break
-
-            if (sains != 0 and agent != None and agent.etat == Etat.SAIN):
-                sains -= 1
-                self.agents[i] = None
-                self.deleted_sains.append((i, agent))
-            elif (infectes != 0 and agent != None and agent.etat == Etat.INFECTE):
-                infectes -= 1
-                self.agents[i] = None
-                self.deleted_infectes.append((i, agent))
-            elif (gueris != 0 and agent != None and agent.etat == Etat.GUERI):
-                gueris -= 1
-                self.agents[i] = None
-                self.deleted_gueris.append((i, agent))
+    def start(self):
+        self.is_running = True
+        tmp = list(filter(lambda x: x is not None, self.agents))
+        self.agents = tmp
     
-    def add_agents(self, sains, infectes, gueris):
-        if (sains > 0):
-            for i in range(len(self.deleted_sains) - 1, -1, -1):
-                val = self.deleted_sains[i]
-                if val == None: continue
-
-                id, agent = val
-                self.agents[id] = agent
-
-                self.deleted_sains.pop()
-                sains -= 1
-                if (sains == 0): break
-        if (infectes > 0):
-            for i in range(len(self.deleted_infectes) - 1, -1, -1):
-                val = self.deleted_infectes[i]
-                if val == None: continue
-
-                id, agent = val
-                self.agents[id] = agent
-
-                self.deleted_infectes.pop()
-                infectes -= 1
-                if (infectes == 0): break
-        if (gueris > 0):
-            for i in range(len(self.deleted_gueris) - 1, -1, -1):
-                val = self.deleted_gueris[i]
-                if val == None: continue
-
-                id, agent = val
-                self.agents[id] = agent
-
-                self.deleted_gueris.pop()
-                gueris -= 1
-                if (gueris == 0): break
-        self.create_agents(sains, infectes, gueris)
+    def stop(self):
+        self.is_running = False
 
     def update(self, step):
         for _ in range(step):
