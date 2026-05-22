@@ -356,9 +356,9 @@ class View:
                 ecran.blit(surf, (px + 15, 70 + i * 35))
         else:
             lignes_defaut = [
-                "Nothing to show,",
-                "click on an agent",
-                "for more info."
+                "Rien à afficher,",
+                "cliquez sur un agent",
+                "pour plus d'infos."
             ]
             for i, ligne in enumerate(lignes_defaut):
                 surf = font_texte.render(ligne, True, (255, 255, 255))
