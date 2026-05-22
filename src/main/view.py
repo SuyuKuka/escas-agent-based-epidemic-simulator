@@ -62,20 +62,36 @@ class View:
         width_button = 85
         space = 10
 
+        # Label Tick
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(70, 10, 40, 20),
+            text="Tick :",
+            manager=manager
+        )
+
+        # Label Tick valeur
+        self.valeurs_labels['tick'] = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(120, 10, 80, 20),
+            text=str(self.sim.tick),
+            manager=manager
+        )
+
+        # Bouton import
         self.import_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(mergin_left, 10, width_button, 30),
+            relative_rect=pygame.Rect(mergin_left, 35, width_button, 30),
             text='Import',
             manager=manager
         )
-        
+
+        # Bouton export
         self.export_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(mergin_left + width_button + space, 10, width_button, 30),
+            relative_rect=pygame.Rect(mergin_left + width_button + space, 35, width_button, 30),
             text='Export',
             manager=manager
         )
 
         controles = [
-            {"id": "exec_tick", "label": "Tick avant fin", "default": config['exec_tick'], "range": config['range_exec_tick']},
+            {"id": "exec_tick", "label": "Tick avant fin de la sim.", "default": config['exec_tick'], "range": config['range_exec_tick']},
             {"id": "seed", "label": "Seed", "default": config['seed'], "range": config['range_seed']},
 
             {"id": "update_speed", "label": "Update par seconde", "default": config['update_speed'], "range": config['range_update_speed']},
@@ -93,13 +109,12 @@ class View:
             {"id": "nb_gueris", "label": "Nombre de Guéris", "default": config['nb_gueris'], "range": config['range_nb_gueris']},
         ]
 
-        hauteur_scroll_list = H - 145
 
         hauteur_interne_scroll = len(controles) * 85 # Nombre de pixel alloué pour le scroll
         
         # Scroll container
         self.scroll_container = pygame_gui.elements.UIScrollingContainer(
-            relative_rect=pygame.Rect(0, 50, SIM_X, hauteur_scroll_list),
+            relative_rect=pygame.Rect(0, 70, SIM_X, H - 165),
             manager=manager
         )
 
@@ -108,7 +123,6 @@ class View:
             (SIM_X - 20, hauteur_interne_scroll)
         )
 
-        start_x = 0
         current_y = 5
         spacing = 5
 
@@ -122,7 +136,7 @@ class View:
 
             # Label Texte
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(5, current_y, 200, height_box),
+                relative_rect=pygame.Rect(0, current_y, 200, height_box),
                 text=ctrl["label"],
                 manager=manager,
                 container=self.scroll_container
@@ -225,6 +239,7 @@ class View:
 
                 while sim_accumulator >= time_per_sim_update:
                     self.sim.update(min(update_step, max_exec_tick - self.sim.tick))
+                    self.valeurs_labels['tick'].set_text(str(self.sim.tick))
                     sim_accumulator -= time_per_sim_update
                 
                     if (self.sim.tick == self.config['exec_tick']):
@@ -251,6 +266,7 @@ class View:
                 self.set_sliders(True)
         elif event.ui_element == self.reset_button:
             self.sim.reset(self.config)
+            self.valeurs_labels['tick'].set_text(str(self.sim.tick))
             self.sim_running = False
             self.start_button.set_text('Start')
             self.agent_selectionne = None 
