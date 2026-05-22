@@ -21,6 +21,7 @@ class Agent:
         self.id = id
         self.x = x
         self.y = y
+        self.shown = False
         self.etat = etat
         self.tick_etat = 0                      # Nombre de tick en étant dans l'état actuel
         self.attitude = attitude
