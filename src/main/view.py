@@ -215,7 +215,6 @@ class View:
             else:
                 self.start_button.set_text('Start')
         elif event.ui_element == self.reset_button:
-            print("Reset de la simulation")
             self.sim.reset(self.config)
             self.sim_running = False
             self.start_button.set_text('Start')
