@@ -218,6 +218,8 @@ class View:
             self.sim.reset(self.config)
             self.sim_running = False
             self.start_button.set_text('Start')
+            self.agent_selectionne = None 
+            self.agent_info_ouvert = False
     
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
