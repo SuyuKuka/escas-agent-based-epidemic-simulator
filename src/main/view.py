@@ -4,6 +4,9 @@ import os
 import pygame_gui
 import json
 from simulation import *
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
 
 W, H = 1200, 700
 SIM_X = 200                         # zone simulation commence ici
@@ -36,7 +39,8 @@ class View:
         pygame.display.set_caption(self.config['name'])
         self.ecran = pygame.display.set_mode((W, H), pygame.SCALED)
         self.clock = pygame.time.Clock()
-        self.manager = pygame_gui.UIManager((W, H), 'res/theme/theme.json')
+        theme_path = BASE_DIR / 'res' / 'theme' / 'theme.json'
+        self.manager = pygame_gui.UIManager((W, H), theme_path)
     
     def init_sim(self):
         self.sim = Simulation(self.config)
