@@ -115,12 +115,14 @@ class Simulation:
     
     def move_agents(self):
         for agent in self.agents:
+            if not agent.shown: continue
             agent.move(self.environnement.largeur, self.environnement.hauteur)
 
     def update_contagion(self):
         nouveaux_infectes = []
 
         for agent in self.agents:
+            if not agent.shown: continue
             agent.tick_etat += 1
             if (agent.etat == Etat.INFECTE):
                 # Guérison
@@ -152,6 +154,7 @@ class Simulation:
         infectes = 0
         gueris = 0
         for agent in self.agents:
+            if not agent.shown: continue
             if (agent.etat == Etat.INFECTE):
                 infectes += 1
             elif (agent.etat == Etat.SAIN):
