@@ -125,8 +125,9 @@ class Simulation:
             if not agent.shown: continue
             agent.tick_etat += 1
             if (agent.etat == Etat.INFECTE):
+                temps_cible = getattr(agent, 'tick_guerison_cible', self.pathogene.tick_guerison * getattr(agent, 'healing_factor', 1.0))
                 # Guérison
-                if (agent.tick_etat == self.pathogene.tick_guerison):
+                if (agent.tick_etat >= temps_cible):
                     agent.etat = Etat.GUERI
                     agent.tick_etat = 0
                 else:
@@ -148,6 +149,8 @@ class Simulation:
         for agent in nouveaux_infectes:
             agent.etat = Etat.INFECTE
             agent.tick_etat = 0
+            facteur = getattr(agent, 'healing_factor', 1.0)
+            agent.tick_guerison_cible = self.pathogene.tick_guerison * facteur
 
     def save_snapshot(self):
         sains = 0

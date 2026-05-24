@@ -1,0 +1,24 @@
+{
+    "label": {
+        "colours": {
+            "normal_text": "#FFFFFF"
+        }
+    },
+    "button": {
+        "colours": {
+            "normal_bg": "#3A3A55",
+            "hovered_bg": "#5A5A75",
+            "active_bg": "#2A2A45"
+        },
+        "misc": {
+            "border_width": "0",
+            "border_radius": "6"
+        }
+    },
+    "horizontal_slider": {
+        "colours": {
+            "normal_bg": "#2A2A40",
+            "sliding_button_bg": "#DEFF9A"
+        }
+    }
+}

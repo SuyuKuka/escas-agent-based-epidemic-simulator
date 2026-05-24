@@ -27,6 +27,7 @@ class Agent:
         self.attitude = attitude
         self.tick_attitude = 0                  # Nombre de tick en étant dans l'attitude actuel
         self.angle = random.uniform(0, 2 * math.pi)
+        self.healing_factor = random.uniform(0.2, 4.0)
     
     def move(self, max_largeur, max_hauteur):
         if (self.attitude == Attitude.NORMAL):

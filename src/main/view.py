@@ -1,11 +1,16 @@
 import pygame
+import pygame.gfxdraw
 import os
 import pygame_gui
+import json
 from simulation import *
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
 
 W, H = 1200, 700
-SIM_X = 200                         # zone simulation commence ici
-SIM_W = 750                         # largeur zone simulation
+SIM_X = 250                         # zone simulation commence ici
+SIM_W = 700                         # largeur zone simulation
 PANEL_W = W - SIM_X - SIM_W         # largeur panneau info agent (droite)
 FPS = 60
 COULEURS = {Etat.SAIN: (70, 130, 220),
@@ -34,7 +39,8 @@ class View:
         pygame.display.set_caption(self.config['name'])
         self.ecran = pygame.display.set_mode((W, H), pygame.SCALED)
         self.clock = pygame.time.Clock()
-        self.manager = pygame_gui.UIManager((W, H))
+        theme_path = BASE_DIR / 'res' / 'theme' / 'theme.json'
+        self.manager = pygame_gui.UIManager((W, H), theme_path)
     
     def init_sim(self):
         self.sim = Simulation(self.config)
@@ -52,108 +58,144 @@ class View:
         self.sliders = {}
         self.valeurs_labels = {}
 
+        mergin_left = 35
+        width_button = 85
+        space = 10
+
+        # Label Tick
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(70, 10, 40, 20),
+            text="Tick :",
+            manager=manager
+        )
+
+        # Label Tick valeur
+        self.valeurs_labels['tick'] = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(120, 10, 80, 20),
+            text=str(self.sim.tick),
+            manager=manager
+        )
+
+        # Bouton import
+        self.import_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(mergin_left, 35, width_button, 30),
+            text='Import',
+            manager=manager
+        )
+
+        # Bouton export
+        self.export_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(mergin_left + width_button + space, 35, width_button, 30),
+            text='Export',
+            manager=manager
+        )
+
         controles = [
-            {"id": "exec_tick", "label": "Tick", "default": config['exec_tick'], "range": config['range_exec_tick']},
+            {"id": "exec_tick", "label": "Tick avant fin de la sim.", "default": config['exec_tick'], "range": config['range_exec_tick']},
             {"id": "seed", "label": "Seed", "default": config['seed'], "range": config['range_seed']},
 
             {"id": "update_speed", "label": "Update par seconde", "default": config['update_speed'], "range": config['range_update_speed']},
             {"id": "update_step", "label": "Update par update", "default": config['update_step'], "range": config['range_update_step']},
 
-            {"id": "largeur", "label": "Largeur", "default": config['largeur'], "range": config['range_largeur']},
-            {"id": "hauteur", "label": "Hauteur", "default": config['hauteur'], "range": config['range_hauteur']},
+            {"id": "largeur", "label": "Largeur de la sim.", "default": config['largeur'], "range": config['range_largeur']},
+            {"id": "hauteur", "label": "Hauteur de la sim.", "default": config['hauteur'], "range": config['range_hauteur']},
 
-            {"id": "rayon_contagion", "label": "Rayon contagion", "default": config['rayon_contagion'], "range": config['range_rayon_contagion']},
-            {"id": "proba_contagion", "label": "Proba contagion", "default": config['proba_contagion'], "range": config['range_proba_contagion']},
-            {"id": "tick_guerison", "label": "Tick Guérison", "default": config['tick_guerison'], "range": config['range_tick_guerison']},
+            {"id": "rayon_contagion", "label": "Rayon de contagion", "default": config['rayon_contagion'], "range": config['range_rayon_contagion']},
+            {"id": "proba_contagion", "label": "Proba. de contagion (%)", "default": config['proba_contagion'], "range": config['range_proba_contagion']},
+            {"id": "tick_guerison", "label": "Tick avant guérison", "default": config['tick_guerison'], "range": config['range_tick_guerison']},
 
-            {"id": "nb_sains", "label": "nb sains", "default": config['nb_sains'], "range": config['range_nb_sains']},
-            {"id": "nb_infectes", "label": "nb infectés", "default": config['nb_infectes'], "range": config['range_nb_infectes']},
-            {"id": "nb_gueris", "label": "nb guéris", "default": config['nb_gueris'], "range": config['range_nb_gueris']},
+            {"id": "nb_sains", "label": "Nombre de Sains", "default": config['nb_sains'], "range": config['range_nb_sains']},
+            {"id": "nb_infectes", "label": "Nombre d'Infectés", "default": config['nb_infectes'], "range": config['range_nb_infectes']},
+            {"id": "nb_gueris", "label": "Nombre de Guéris", "default": config['nb_gueris'], "range": config['range_nb_gueris']},
         ]
 
-        largeur_scroll_list = SIM_X - 10
-        hauteur_scroll_list = H - 150
 
         hauteur_interne_scroll = len(controles) * 85 # Nombre de pixel alloué pour le scroll
         
         # Scroll container
         self.scroll_container = pygame_gui.elements.UIScrollingContainer(
-            relative_rect=pygame.Rect(10, 20, largeur_scroll_list, hauteur_scroll_list),
+            relative_rect=pygame.Rect(0, 70, SIM_X, H - 165),
             manager=manager
         )
 
         # On ajuste la zone virtuelle de défilement
         self.scroll_container.set_scrollable_area_dimensions(
-            (largeur_scroll_list - 25, hauteur_interne_scroll)
+            (SIM_X - 20, hauteur_interne_scroll)
         )
 
-        start_x = 0
         current_y = 5
         spacing = 5
 
         for ctrl in controles:
-            # TODO: Désactiver les sliders durant la simulation et les reactiver quand elle ne run plus
-            
             if ctrl["id"] == "proba_contagion":
                 pas = 0.05
             else:
                 pas = 1
             
-            # Label Nom
+            height_box = 30
+
+            # Label Texte
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, 135, 25),
+                relative_rect=pygame.Rect(0, current_y, 200, height_box),
                 text=ctrl["label"],
                 manager=manager,
                 container=self.scroll_container
             )
 
-            # Label Valeur
+            # Label valeur
             self.valeurs_labels[ctrl["id"]] = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + 115, current_y, 50, 25),
+                relative_rect=pygame.Rect(180, current_y, 50, height_box),
                 text=str(ctrl["default"]),
                 manager=manager,
                 container=self.scroll_container
             )
-            current_y += 25
+            current_y += height_box
 
             # Slider
             self.sliders[ctrl["id"]] = pygame_gui.elements.UIHorizontalSlider(
-                relative_rect=pygame.Rect(start_x, current_y, 165, 30),
+                relative_rect=pygame.Rect(0, current_y, 230, height_box),
                 start_value=ctrl["default"],
                 value_range=ctrl["range"],
                 manager=manager,
                 container=self.scroll_container,
                 click_increment=pas
             )
-            current_y += 30
+            current_y += 25
 
-            # Label Range Min
+            # Label min
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x, current_y, 30, 20),
+                relative_rect=pygame.Rect(0, current_y, 50, height_box),
                 text=str(ctrl["range"][0]),
                 manager=manager,
                 container=self.scroll_container
             )
-            # Label Range Max
+            # Label max
             pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect(start_x + 115, current_y, 50, 20),
+                relative_rect=pygame.Rect(180, current_y, 50, height_box),
                 text=str(ctrl["range"][1]),
                 manager=manager,
                 container=self.scroll_container
             )
             current_y += 20 + spacing
 
-        current_y = H - 100
+        current_y = H - 105
 
         # Bouton bottom
+        bouton_x = (SIM_X - 170) // 2
         self.start_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(start_x, current_y + 25, 170, 30),
+            relative_rect=pygame.Rect(bouton_x, current_y + 25, 170, 30),
             text='Start Simulation',
             manager=manager
         )
         self.reset_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(start_x, current_y + 55, 170, 30),
+            relative_rect=pygame.Rect(bouton_x, current_y + 55, 170, 30),
             text='Reset',
+            manager=manager
+        )
+
+        self.graph_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(W - PANEL_W + 20, H - 50, PANEL_W - 40, 30),
+            text='Afficher le graphique',
             manager=manager
         )
     
@@ -197,33 +239,65 @@ class View:
 
                 while sim_accumulator >= time_per_sim_update:
                     self.sim.update(min(update_step, max_exec_tick - self.sim.tick))
+                    self.valeurs_labels['tick'].set_text(str(self.sim.tick))
                     sim_accumulator -= time_per_sim_update
                 
                     if (self.sim.tick == self.config['exec_tick']):
                         self.sim_running = False
                         self.start_button.set_text('Start')
+                        self.set_sliders(True)
                         sim_accumulator = 0.0
                         break
 
             self.draw(dt)
-
+            self.update_graph()
             manager.draw_ui(ecran)
             pygame.display.flip()
 
     def check_button_click(self, event):
+        config_path = BASE_DIR / 'res' / 'input' / 'config.json'
         if event.ui_element == self.start_button:
             # print(self.config['exec_tick'])
             self.sim_running = not self.sim_running
             if self.sim_running:
                 self.start_button.set_text('Pause')
+                self.set_sliders(False)
             else:
                 self.start_button.set_text('Start')
+                self.set_sliders(True)
         elif event.ui_element == self.reset_button:
             self.sim.reset(self.config)
+            self.valeurs_labels['tick'].set_text(str(self.sim.tick))
             self.sim_running = False
             self.start_button.set_text('Start')
             self.agent_selectionne = None 
             self.agent_info_ouvert = False
+        elif event.ui_element == self.export_button:
+            with open(config_path, 'w') as f:
+                json.dump(self.config, f, indent=4)
+            print("Configuration sauvegardée dans 'config.json' !")
+        elif event.ui_element == self.import_button:
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    nouvelle_config = json.load(f)
+                    for cle, valeur in nouvelle_config.items():
+                        self.config[cle] = valeur
+                    
+                    for ctrl_id, slider in self.sliders.items():
+                        if ctrl_id in self.config:
+                            slider.set_current_value(self.config[ctrl_id])
+                            self.valeurs_labels[ctrl_id].set_text(str(self.config[ctrl_id]))
+
+                    self.sim.reset(self.config)
+                    self.sim_running = False
+                    self.start_button.set_text('Start')
+                    self.agent_selectionne = None
+                    self.agent_info_ouvert = False
+                print("Configuration chargée avec succès !")
+            else:
+                print("Erreur : Aucun fichier 'res/input/config.json' trouvé.")
+        elif event.ui_element == self.graph_button:
+            self.open_graph()
     
     def check_slider_move(self, event):
         for ctrl_id, slider in self.sliders.items():
@@ -256,6 +330,9 @@ class View:
         rayon_ecran_carre = RADIUS_DRAW_AGENT ** 2
 
         for a in self.sim.agents:
+            if not a.shown:
+                continue
+
             ax_ecran, ay_ecran = self.sim_pos_to_screen_pos((a.x, a.y))
             # print((ax_ecran, ay_ecran))
             distance_carre = (ax_ecran - mx)**2 + (ay_ecran - my)**2
@@ -271,6 +348,7 @@ class View:
 
     def draw(self, dt):
         ecran = self.ecran
+        px = SIM_X + SIM_W
         
         # Fond
         ecran.fill((20, 20, 30))
@@ -287,30 +365,56 @@ class View:
         pygame.draw.rect(ecran, (25, 25, 40), (0, 0, SIM_X, H))
 
         # Panneau droite (fond)
-        pygame.draw.rect(ecran, (20, 20, 30), (SIM_X + SIM_W, 0, PANEL_W, H))
-
-        # Panneau infos droite (apparaît si agent sélectionné)
+        pygame.draw.rect(ecran, (35, 35, 55), (px + 1, 0, PANEL_W, H))
         pygame.draw.line(ecran, (60, 60, 80), (W - PANEL_W, 0), (W - PANEL_W, H))
+
+        font_titre = pygame.font.SysFont("monospace", 22, bold=True)
+        titre_surf = font_titre.render("Informations", True, (255, 255, 255))
+        titre_rect = titre_surf.get_rect(center=(px + (PANEL_W // 2), 30))
+        ecran.blit(titre_surf, titre_rect)
+
+        pygame.draw.line(ecran, (80, 80, 100), (px + 20, 50), (px + PANEL_W - 20, 50))
+        font_texte = pygame.font.SysFont("monospace", 16)
+        # Panneau infos droite (apparaît si agent sélectionné)
         if self.agent_info_ouvert and self.agent_selectionne:
             a = self.agent_selectionne
-            px = SIM_X + SIM_W
-            pygame.draw.rect(ecran, (35, 35, 55), (px + 1, 0, PANEL_W, H))
-
-            font = pygame.font.SysFont("monospace", 18)
+            state = a.etat.name if hasattr(a.etat, 'name') else str(a.etat)
             infos = [
                 f"Agent #{a.id}",
-                f"État : {a.etat}",
+                f"État : {state}",
                 f"Pos : ({round(a.x, 2)}, {round(a.y, 2)})",
             ]
+
             for i, ligne in enumerate(infos):
-                surf = font.render(ligne, True, (200, 200, 210))
-                ecran.blit(surf, (px + 15, 40 + i * 35))
+                surf = font_texte.render(ligne, True, (255, 255, 255))
+                ecran.blit(surf, (px + 15, 70 + i * 35))
+        else:
+            lignes_defaut = [
+                "Rien à afficher,",
+                "cliquez sur un agent",
+                "pour plus d'infos."
+            ]
+            for i, ligne in enumerate(lignes_defaut):
+                surf = font_texte.render(ligne, True, (255, 255, 255))
+                rect = surf.get_rect(center=(px + (PANEL_W // 2), 120 + i * 25))
+                ecran.blit(surf, rect)
 
     def draw_agent(self, agent, ecran, est_selection):
         pos = self.sim_pos_to_screen_pos((agent.x, agent.y))
-        pygame.draw.circle(ecran, get_agent_couleur(agent), (pos[0], pos[1]), RADIUS_DRAW_AGENT)
+        couleur = get_agent_couleur(agent)
+        
+        pygame.gfxdraw.aacircle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT, couleur)
+        pygame.gfxdraw.filled_circle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT, couleur)
+        
         if (est_selection):
-            pygame.draw.circle(ecran, (255, 220, 0), (pos[0], pos[1]), 12, 2)
+            pygame.gfxdraw.aacircle(ecran, pos[0], pos[1], RADIUS_DRAW_AGENT + 4, (255, 220, 0))
+
+    def set_sliders(self, enabled: bool):
+        for slider in self.sliders.values():
+            if enabled:
+                slider.enable()
+            else:
+                slider.disable()
         
     def sim_pos_to_screen_pos(self, xy):
         scale_x = SIM_W / self.sim.environnement.largeur
@@ -330,3 +434,75 @@ class View:
         sim_y = xy[1] * scale_y
         
         return (float(sim_x), float(sim_y))
+
+    def open_graph(self):
+        if hasattr(self, 'fenetre_graphe') and self.fenetre_graphe is not None:
+            self.fenetre_graphe.kill()
+            
+        rect_fenetre = pygame.Rect((W // 2 - 300, H // 2 - 200), (600, 400))
+        
+        self.fenetre_graphe = pygame_gui.elements.UIWindow(
+            rect=rect_fenetre,
+            manager=self.manager,
+            window_display_title="Évolution de la population (Modèle SIR)",
+            resizable=False
+        )
+        
+        self.graph_w = 568
+        self.graph_h = 330
+        
+        self.graph_surface = pygame.Surface((self.graph_w, self.graph_h))
+        self.graph_surface.fill((30, 30, 40))
+        
+        self.graph_image = pygame_gui.elements.UIImage(
+            relative_rect=pygame.Rect(0, 0, self.graph_w, self.graph_h),
+            image_surface=self.graph_surface,
+            manager=self.manager,
+            container=self.fenetre_graphe
+        )
+
+    def update_graph(self):
+        if not hasattr(self, 'fenetre_graphe') or not self.fenetre_graphe.alive():
+            return
+            
+        historique = self.sim.historique
+        if len(historique) < 2:
+            return
+
+        self.graph_surface.fill((30, 30, 40))
+        
+        for i in range(1, 5):
+            y_ligne = i * (self.graph_h / 5)
+            pygame.draw.line(self.graph_surface, (50, 50, 60), (0, y_ligne), (self.graph_w, y_ligne))
+
+        max_pop = max([d["sains"] + d["infectes"] + d["gueris"] for d in historique])
+        if max_pop == 0: max_pop = 1
+        
+        min_tick = historique[0]["tick"]
+        max_tick = historique[-1]["tick"]
+        delta_tick = max_tick - min_tick
+        if delta_tick == 0: delta_tick = 1
+
+        scale_x = self.graph_w / delta_tick
+        scale_y = (self.graph_h - 10) / max_pop 
+
+        points_sains = []
+        points_infectes = []
+        points_gueris = []
+
+        for data in historique:
+            x = (data["tick"] - min_tick) * scale_x
+            
+            y_sain = self.graph_h - (data["sains"] * scale_y)
+            y_infecte = self.graph_h - (data["infectes"] * scale_y)
+            y_gueri = self.graph_h - (data["gueris"] * scale_y)
+            
+            points_sains.append((x, y_sain))
+            points_infectes.append((x, y_infecte))
+            points_gueris.append((x, y_gueri))
+
+        pygame.draw.lines(self.graph_surface, (70, 130, 220), False, points_sains, 2)
+        pygame.draw.lines(self.graph_surface, (220, 60, 60), False, points_infectes, 2)
+        pygame.draw.lines(self.graph_surface, (50, 180, 100), False, points_gueris, 2)
+        
+        self.graph_image.set_image(self.graph_surface)
