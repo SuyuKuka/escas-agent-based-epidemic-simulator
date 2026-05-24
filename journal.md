@@ -6,7 +6,6 @@
 
 # 07/11/2025
 
-
 TODO
 - [ ] Etudier la page wiki sur l'epidemiologie
 - [ ] Define an ocaml type for virus and a type for bacteria

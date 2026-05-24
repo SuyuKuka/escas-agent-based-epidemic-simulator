@@ -1,13 +1,6 @@
 # l'état de l'art
 
-L'état de l'art est l'état des connaissances dans un domaine (scientifique, technique, artistique, médical, etc.) à un instant donné
+L'état de l'art est l'état des connaissances dans un domaine (scientifique, technique, artistique, médical, etc.) à un instant donné.
+(= Désigne le niveau de développement le plus avancé dans un domaine scientifique ou artistique jamais atteint.)
 
-## Swarm intelligence (ou intelligence distribuée) :
-désigne l'apparition de phénomènes cohérents à l'échelle d'une population dont les individus agissent selon des règles simples.
-
-Swarm intelligence systems consist typically of a population of simple agents or boids interacting locally with one another and with their environment.
-
-The agents follow very simple rules, and although there is no centralized control structure dictating how individual agents should behave, local, and to a certain degree random, interactions between such agents lead to the emergence of "intelligent" global behavior, unknown to the individual agents.
-
-Exemples d'algorithmes :
-- Nid d'abeilles, colonie de fourmies
+https://fr.wikipedia.org/wiki/%C3%89tat_de_l%27art

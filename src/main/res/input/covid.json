@@ -1,0 +1,15 @@
+{
+    "name": "Simulation COVID-19 (Souche Alpha)",
+    "exec_tick": 10000,
+    "seed": 42,
+    "update_speed": 40,
+    "update_step": 1,
+    "largeur": 700,
+    "hauteur": 700,
+    "rayon_contagion": 20,
+    "proba_contagion": 0.85,
+    "tick_guerison": 300,
+    "nb_sains": 245,
+    "nb_infectes": 5,
+    "nb_gueris": 0
+}

@@ -1,0 +1,606 @@
+{
+  "simulation": {
+    "historique": [
+      {
+        "tick": 0,
+        "sains": 190,
+        "infectes": 10,
+        "gueris": 10
+      },
+      {
+        "tick": 1,
+        "sains": 189,
+        "infectes": 11,
+        "gueris": 10
+      },
+      {
+        "tick": 2,
+        "sains": 189,
+        "infectes": 11,
+        "gueris": 10
+      },
+      {
+        "tick": 3,
+        "sains": 188,
+        "infectes": 12,
+        "gueris": 10
+      },
+      {
+        "tick": 4,
+        "sains": 187,
+        "infectes": 13,
+        "gueris": 10
+      },
+      {
+        "tick": 5,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 6,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 7,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 8,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 9,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 10,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 11,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 12,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 13,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 14,
+        "sains": 186,
+        "infectes": 14,
+        "gueris": 10
+      },
+      {
+        "tick": 15,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 16,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 17,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 18,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 19,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 20,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 21,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 22,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 23,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 24,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 25,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 26,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 27,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 28,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 29,
+        "sains": 185,
+        "infectes": 15,
+        "gueris": 10
+      },
+      {
+        "tick": 30,
+        "sains": 184,
+        "infectes": 16,
+        "gueris": 10
+      },
+      {
+        "tick": 31,
+        "sains": 183,
+        "infectes": 17,
+        "gueris": 10
+      },
+      {
+        "tick": 32,
+        "sains": 183,
+        "infectes": 17,
+        "gueris": 10
+      },
+      {
+        "tick": 33,
+        "sains": 183,
+        "infectes": 17,
+        "gueris": 10
+      },
+      {
+        "tick": 34,
+        "sains": 183,
+        "infectes": 17,
+        "gueris": 10
+      },
+      {
+        "tick": 35,
+        "sains": 182,
+        "infectes": 18,
+        "gueris": 10
+      },
+      {
+        "tick": 36,
+        "sains": 182,
+        "infectes": 18,
+        "gueris": 10
+      },
+      {
+        "tick": 37,
+        "sains": 182,
+        "infectes": 18,
+        "gueris": 10
+      },
+      {
+        "tick": 38,
+        "sains": 182,
+        "infectes": 18,
+        "gueris": 10
+      },
+      {
+        "tick": 39,
+        "sains": 181,
+        "infectes": 19,
+        "gueris": 10
+      },
+      {
+        "tick": 40,
+        "sains": 181,
+        "infectes": 19,
+        "gueris": 10
+      },
+      {
+        "tick": 41,
+        "sains": 181,
+        "infectes": 19,
+        "gueris": 10
+      },
+      {
+        "tick": 42,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 43,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 44,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 45,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 46,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 47,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 48,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 49,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 50,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 51,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 52,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 53,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 54,
+        "sains": 180,
+        "infectes": 20,
+        "gueris": 10
+      },
+      {
+        "tick": 55,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 56,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 57,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 58,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 59,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 60,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 61,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 62,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 63,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 64,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 65,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 66,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 67,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 68,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 69,
+        "sains": 179,
+        "infectes": 21,
+        "gueris": 10
+      },
+      {
+        "tick": 70,
+        "sains": 178,
+        "infectes": 22,
+        "gueris": 10
+      },
+      {
+        "tick": 71,
+        "sains": 178,
+        "infectes": 22,
+        "gueris": 10
+      },
+      {
+        "tick": 72,
+        "sains": 177,
+        "infectes": 23,
+        "gueris": 10
+      },
+      {
+        "tick": 73,
+        "sains": 176,
+        "infectes": 24,
+        "gueris": 10
+      },
+      {
+        "tick": 74,
+        "sains": 175,
+        "infectes": 25,
+        "gueris": 10
+      },
+      {
+        "tick": 75,
+        "sains": 175,
+        "infectes": 25,
+        "gueris": 10
+      },
+      {
+        "tick": 76,
+        "sains": 175,
+        "infectes": 25,
+        "gueris": 10
+      },
+      {
+        "tick": 77,
+        "sains": 175,
+        "infectes": 25,
+        "gueris": 10
+      },
+      {
+        "tick": 78,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 79,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 80,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 81,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 82,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 83,
+        "sains": 174,
+        "infectes": 26,
+        "gueris": 10
+      },
+      {
+        "tick": 84,
+        "sains": 173,
+        "infectes": 27,
+        "gueris": 10
+      },
+      {
+        "tick": 85,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 86,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 87,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 88,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 89,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 90,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 91,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 92,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 93,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 94,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 95,
+        "sains": 172,
+        "infectes": 28,
+        "gueris": 10
+      },
+      {
+        "tick": 96,
+        "sains": 171,
+        "infectes": 29,
+        "gueris": 10
+      },
+      {
+        "tick": 97,
+        "sains": 171,
+        "infectes": 29,
+        "gueris": 10
+      },
+      {
+        "tick": 98,
+        "sains": 171,
+        "infectes": 29,
+        "gueris": 10
+      },
+      {
+        "tick": 99,
+        "sains": 171,
+        "infectes": 19,
+        "gueris": 20
+      }
+    ]
+  }
+}
