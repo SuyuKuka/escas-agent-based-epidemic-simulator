@@ -78,26 +78,6 @@ class Simulation:
             self.gueris_shown -= 1
             nb_gueris += 1
 
-    def add_new_agents(self, sains, infectes, gueris):
-        for _ in range(sains):
-            self.agents.append(Agent(self.agentIDIterator,
-                                     round(random.uniform(0, self.environnement.largeur), 2),
-                                     round(random.uniform(0, self.environnement.hauteur), 2),
-                                     Etat.SAIN))
-            self.agentIDIterator += 1
-        for _ in range(infectes):
-            self.agents.append(Agent(self.agentIDIterator,
-                                     round(random.uniform(0, self.environnement.largeur), 2),
-                                     round(random.uniform(0, self.environnement.hauteur), 2),
-                                     Etat.INFECTE))
-            self.agentIDIterator += 1
-        for _ in range(gueris):
-            self.agents.append(Agent(self.agentIDIterator,
-                                     round(random.uniform(0, self.environnement.largeur), 2),
-                                     round(random.uniform(0, self.environnement.hauteur), 2),
-                                     Etat.GUERI))
-            self.agentIDIterator += 1
-    
     def start(self):
         self.is_running = True
         tmp = list(filter(lambda x: x is not None, self.agents))
