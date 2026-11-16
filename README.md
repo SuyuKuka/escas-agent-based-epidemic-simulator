@@ -31,7 +31,7 @@ Due to limited development time, certain features come with minor compromises:
 ## Project Structure
 
 ```text
-📁 fsh/
+📁 escas/
 │
 ├── 📁 docs/
 │   └── 📄 soutenance_chiv_chen.pdf     # Project defense slides
